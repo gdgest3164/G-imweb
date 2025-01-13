@@ -30,7 +30,7 @@ export default function DashboardPage() {
     fetchTemplates();
   }, []);
 
-  const handleEdit = (id: string) => {
+  const handleEdit = () => {
     router.push(`/dashboard/templates/b146bcbf-5590-4e83-b685-1f284a979b28/edit`);
   };
 

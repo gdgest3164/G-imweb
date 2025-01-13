@@ -1,4 +1,4 @@
-import { LandingComponent } from "../types/landing";
+import { LandingComponent } from "@/lib/types/landing";
 
 export interface SectionTemplate {
   id: string;

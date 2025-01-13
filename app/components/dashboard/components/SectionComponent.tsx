@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { LandingComponent, ContainerComponent } from "@/lib/types/landing";
 import { DraggableComponent } from "../DraggableComponent";
 
@@ -13,7 +12,7 @@ interface SectionComponentProps {
   onTemplateSaved?: () => void;
 }
 
-export function SectionComponent({ component, isSelected, selectedComponent, setSelectedComponent, onUpdate, handleDeleteComponent, onTemplateSaved }: SectionComponentProps) {
+export function SectionComponent({ component, isSelected, selectedComponent, setSelectedComponent, onUpdate, handleDeleteComponent }: SectionComponentProps) {
   const handleMoveComponent = (dragIndex: number, hoverIndex: number) => {
     const newChildren = [...component.children];
     const [draggedChild] = newChildren.splice(dragIndex, 1);
