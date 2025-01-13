@@ -7,7 +7,6 @@ import { LandingComponent } from "@/lib/types/landing";
 import { DesignEditor } from "./DesignEditor";
 import { AlertModal } from "../ui/AlertModal";
 import { createClient } from "@/app/lib/supabase/client";
-import { Input } from "../ui/Input";
 
 interface TemplateFormProps {
   initialData?: Omit<Template, "content"> & {
@@ -29,8 +28,6 @@ export function TemplateForm({ initialData, onSubmit, submitLabel, loadingLabel,
   const [isMetaOpen, setIsMetaOpen] = useState(false);
   const [showMetaButton, setShowMetaButton] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [prompt, setPrompt] = useState("");
-  const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -149,34 +146,6 @@ export function TemplateForm({ initialData, onSubmit, submitLabel, loadingLabel,
     }
   };
 
-  const handleGenerateTemplate = async () => {
-    if (!prompt) return;
-
-    setIsGenerating(true);
-    try {
-      const response = await fetch("/api/generate-template", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ prompt }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "템플릿 생성에 실패했습니다.");
-      }
-
-      setContent(data);
-    } catch (error) {
-      console.error("Error generating template:", error);
-      setError(error instanceof Error ? error.message : "템플릿 생성 중 오류가 발생했습니다.");
-    } finally {
-      setIsGenerating(false);
-    }
-  };
-
   return (
     <div className="relative">
       <AlertModal
@@ -274,8 +243,6 @@ export function TemplateForm({ initialData, onSubmit, submitLabel, loadingLabel,
                   value = value.replace(/[^a-zA-Z0-9.-]/g, "-");
                   setTitle(value);
                 }}
-                pattern="[a-zA-Z][a-zA-Z0-9.-]*"
-                title="영문, 숫자, 하이픈(-)만 입력 가능합니다"
                 placeholder="영문, 숫자, 하이픈(-)만 입력 가능"
                 className="border mt-1 block w-full rounded-md border-gray-300 p-2 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white dark:border-gray-400"
               />
@@ -295,46 +262,6 @@ export function TemplateForm({ initialData, onSubmit, submitLabel, loadingLabel,
                 className="border mt-1 block w-full rounded-md border-gray-300 p-2 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white dark:border-gray-400"
               />
             </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="max-w-2xl mx-auto my-1 p-3 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-shadow duration-300">
-        <div className="flex flex-col gap-4">
-          <div className="flex items-center gap-3">
-            GPT
-            <Input
-              placeholder="부동산 랜딩페이지 만들어줘 (미완성)"
-              value={prompt}
-              onChange={(e) => {
-                setPrompt(e.target.value);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey && !isGenerating && prompt) {
-                  e.preventDefault();
-                  handleGenerateTemplate();
-                }
-              }}
-              className="flex-1 text-base py-2.5 dark:bg-gray-700 dark:text-gray-100"
-            />
-            <Button
-              onClick={handleGenerateTemplate}
-              disabled={isGenerating || !prompt}
-              variant="secondary"
-              className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-black dark:text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
-            >
-              {isGenerating ? (
-                <div className="flex items-center gap-2">
-                  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                  </svg>
-                  <span>생성 중...</span>
-                </div>
-              ) : (
-                <span>생성하기</span>
-              )}
-            </Button>
           </div>
         </div>
       </div>
