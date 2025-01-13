@@ -17,12 +17,12 @@ interface TemplateFormProps {
     temp_domain?: string;
   };
   onSubmit: (data: { title: string; description: string; content: LandingComponent[] }) => Promise<void>;
-  onCancel: () => void;
   submitLabel: string;
   loadingLabel: string;
+  showDeployButton?: boolean;
 }
 
-export function TemplateForm({ initialData, onSubmit, submitLabel, loadingLabel }: TemplateFormProps) {
+export function TemplateForm({ initialData, onSubmit, submitLabel, loadingLabel, showDeployButton }: TemplateFormProps) {
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState(initialData?.title || "");
   const [description, setDescription] = useState(initialData?.description || "");
@@ -193,27 +193,28 @@ export function TemplateForm({ initialData, onSubmit, submitLabel, loadingLabel 
       />
       <div className="sticky top-0 h-[50px] bg-gray-100/30 dark:bg-gray-500/80 backdrop-blur-sm z-30 flex items-center justify-end px-4">
         <div className="flex items-center gap-3">
-          <Button
-            disabled={!initialData}
-            onClick={() => {
-              if (initialData) {
-                window.open(`/templates/${initialData.id}`, "_blank");
-              }
-            }}
-            variant="secondary"
-            className="flex items-center gap-2"
-          >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-              />
-            </svg>
-            미리보기
-          </Button>
+          {showDeployButton && initialData && (
+            <Button
+              onClick={() => {
+                if (initialData) {
+                  window.open(`/templates/${initialData.id}`, "_blank");
+                }
+              }}
+              variant="secondary"
+              className="flex items-center gap-2"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                />
+              </svg>
+              미리보기
+            </Button>
+          )}
           <Button type="button" onClick={handleSubmit} disabled={loading} variant="secondary" className="flex items-center gap-2 px-6">
             {loading ? (
               <>

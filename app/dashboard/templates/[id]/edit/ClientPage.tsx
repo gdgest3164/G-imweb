@@ -34,7 +34,6 @@ export function ClientPage({ template }: ClientPageProps) {
             setError(template ? "템플릿 수정에 실패했습니다." : "템플릿 생성에 실패했습니다.");
           }
         }}
-        onCancel={() => router.push("/dashboard")}
         submitLabel={template ? "템플릿 수정" : "템플릿 생성"}
         loadingLabel={template ? "수정 중..." : "생성 중..."}
         showDeployButton={!!template}
