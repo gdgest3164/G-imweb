@@ -6,7 +6,6 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import { LandingComponent, ComponentType, TextComponent, ImageComponent, ButtonComponent, MarginComponent, ContainerComponent, DividerComponent } from "@/lib/types/landing";
 import { DraggableComponent } from "@/app/components/dashboard/DraggableComponent";
 import { PropertyPanel } from "@/app/components/dashboard/PropertyPanel";
-import { SectionTemplate } from "@/app/lib/api/section-templates";
 import { DragPreviewMap } from "./components/DragPreviewMap";
 import { PopupEditor } from "./components/PopupEditor";
 import { applyButtonStyle } from "./components/ButtonComponent";
@@ -82,7 +81,7 @@ export const createDefaultComponent = (type: LandingComponent["type"]): LandingC
 
 export function DesignEditor({ components, onChange }: DesignEditorProps) {
   const [selectedComponent, setSelectedComponent] = useState<string | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen] = useState(false);
   const [isDraggingSection, setIsDraggingSection] = useState(false);
   const [draggedSectionId, setDraggedSectionId] = useState<string | null>(null);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
@@ -341,69 +340,6 @@ export function DesignEditor({ components, onChange }: DesignEditorProps) {
       }
     }
     return null;
-  };
-
-  const handleTemplateSelect = (template: SectionTemplate) => {
-    setIsModalOpen(false);
-
-    // 모든 컴포넌트의 ID를 새로 생성하는 함수
-    const regenerateIds = (component: LandingComponent): LandingComponent => {
-      const newComponent = {
-        ...component,
-        id: crypto.randomUUID(),
-      };
-
-      if (newComponent.type === "section") {
-        return {
-          ...newComponent,
-          children: (newComponent as ContainerComponent).children.map(regenerateIds),
-        };
-      }
-
-      return newComponent;
-    };
-
-    const newComponent = regenerateIds(template.content);
-
-    if (selectedComponent) {
-      const selectedComp = findComponentById(components, selectedComponent);
-      if (selectedComp) {
-        // 선택된 컴포넌트가 섹션인 경우, 섹션 내부에 추가
-        if (selectedComp.type === "section") {
-          const newComponents = addComponentToSection(components, selectedComponent, newComponent, null);
-          onChange(newComponents);
-          setSelectedComponent(newComponent.id);
-          scrollToComponent(newComponent.id);
-          return;
-        }
-
-        // 선택된 컴포넌트의 부모 섹션을 찾습니다
-        const parentSection = findParentSection(components, selectedComponent);
-        if (parentSection) {
-          const newComponents = addComponentToSection(components, parentSection.id, newComponent, selectedComponent);
-          onChange(newComponents);
-          setSelectedComponent(newComponent.id);
-          scrollToComponent(newComponent.id);
-          return;
-        }
-
-        // 섹션이 아닌 경우, 선택된 컴포넌트 다음에 추가
-        const selectedIndex = components.findIndex((c) => c.id === selectedComponent);
-        if (selectedIndex !== -1) {
-          const newComponents = [...components];
-          newComponents.splice(selectedIndex + 1, 0, newComponent);
-          onChange(newComponents);
-          setSelectedComponent(newComponent.id);
-          scrollToComponent(newComponent.id);
-          return;
-        }
-      }
-    }
-
-    // 선택된 컴포넌트가 없는 경우, 맨 끝에 추가
-    onChange([...components, newComponent]);
-    setSelectedComponent(newComponent.id);
-    scrollToComponent(newComponent.id);
   };
 
   // 컴포넌트로 스크롤하는 함수

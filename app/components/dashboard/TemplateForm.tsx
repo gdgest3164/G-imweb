@@ -6,7 +6,6 @@ import { Template } from "@/lib/types";
 import { LandingComponent } from "@/lib/types/landing";
 import { DesignEditor } from "./DesignEditor";
 import { AlertModal } from "../ui/AlertModal";
-import { Modal } from "../ui/Modal";
 import { createClient } from "@/app/lib/supabase/client";
 import { Input } from "../ui/Input";
 
@@ -21,10 +20,9 @@ interface TemplateFormProps {
   onCancel: () => void;
   submitLabel: string;
   loadingLabel: string;
-  showDeployButton?: boolean;
 }
 
-export function TemplateForm({ initialData, onSubmit, submitLabel, loadingLabel, showDeployButton = false }: TemplateFormProps) {
+export function TemplateForm({ initialData, onSubmit, submitLabel, loadingLabel }: TemplateFormProps) {
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState(initialData?.title || "");
   const [description, setDescription] = useState(initialData?.description || "");

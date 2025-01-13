@@ -3,6 +3,7 @@ import { getTemplate } from "@/lib/api/templates";
 import { LandingComponent, ContainerComponent } from "@/lib/types/landing";
 import { ClientButton } from "@/app/components/templates/ClientButton";
 import { DividerComponent } from "@/app/components/dashboard/components/DividerComponent";
+import Image from "next/image";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -153,9 +154,11 @@ export default async function Page({ params }: PageProps) {
         return (
           <div className={`${containerClasses} ${classes}`}>
             <div className={`${component.isCircle ? "rounded-full overflow-hidden" : "overflow-hidden"} flex items-center justify-center relative`} style={style}>
-              <img
+              <Image
                 src={component.src}
                 alt={component.alt || ""}
+                width={500}
+                height={300}
                 className={`${
                   component.isCircle
                     ? "object-cover aspect-square"
